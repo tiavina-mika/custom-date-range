@@ -6,6 +6,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import clsx from "clsx";
 
 function DateRangePicker({
+  setOpen,
   classes,
   value,
   onChange,
@@ -31,7 +32,7 @@ function DateRangePicker({
   const min = Math.min(begin, end || hover);
   const max = Math.max(begin, end || hover);
 
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
 
   const isOpen = openForward !== undefined ? openForward : open;
 
