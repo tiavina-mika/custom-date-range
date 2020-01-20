@@ -19,6 +19,8 @@ export default function App() {
         <h1>Select a date range</h1>
         <Button onClick={handleOpen}>Open</Button>
             <DateRangePicker
+              variant="static"
+              isOpen={true}
                 disableToolbar
                 value={[]}
                 setOpen={handleOpen}
