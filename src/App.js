@@ -1,42 +1,64 @@
-import React from "react";
-import "./styles.css";
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-// import DateRangePicker from "./DateRangePicker";
-import DateRangePicker from "./DemoPicker";
-import Button from '@material-ui/core/Button'
+import React, { useState } from "react";
+import { useUtils } from "@material-ui/pickers";
+import Box from '@material-ui/core/Box';
+import SelectDate from './components/SelectDate';
+import Dialog from './components/Dialog';
 
-export default function App() {
-  const [begin, setBegin] = React.useState(false);
-  const [end, setEnd] = React.useState(false);
-  const [open, setOpen] = React.useState(false);
+const format = "MMM do yyyy";
+
+const App = () => {
+  const [begin, setBegin] = useState(false);
+  const [end, setEnd] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  const utils = useUtils();
 
   const handleOpen = () => setOpen(!open);
+  const formatDate = date => utils.format(date, format || utils.dateFormat);
+
+  const handleChange = values => {
+    setBegin(values.begin);
+    setEnd(values.end);
+  }
+
+  const handleSubmit = () => {
+    console.log("begin", begin);
+    console.log("end", end);
+    setOpen(false);
+  }
+
+  const handleCancel = () => {
+    setBegin(false);
+    setEnd(false);
+    setOpen(false);
+  }
 
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <div className="App">
-        <h1>Select a date range</h1>
-        <Button onClick={handleOpen}>Open</Button>
-            <DateRangePicker
-              variant="static"
-              isOpen={true}
-                disableToolbar
-                value={[]}
-                setOpen={handleOpen}
+      <Box bgcolor="#00132C" p={3} height="100vh">
+          <Box display="flex" justifyContent="center" p={2}>
+            <SelectDate 
+                begin={begin}
+                end={end}
                 open={open}
-                placeholder="Select a date range"
-                onChange={values => {
-                    console.log("one", values);
-                    setBegin(values.begin);
-                    setEnd(values.end);
-                }}
+                placeholder="From"
+                onClick={handleOpen}
+                formatDate={formatDate}
             />
-        <ul>
-          <li>Begin: {begin ? begin.toString() : ""}</li>
-          <li>End: {end ? end.toString() : ""}</li>
-        </ul>
-      </div>
-    </MuiPickersUtilsProvider>
+          </Box>
+          { open && (
+            <Dialog 
+                formatDate={formatDate}
+                onClick={handleOpen}
+                open={open}
+                onChange={handleChange}
+                begin={begin}
+                end={end}
+                onSubmit={handleSubmit}
+                onCancel={handleCancel}
+            />
+          )}
+      </Box>
   );
 }
+
+export default App;

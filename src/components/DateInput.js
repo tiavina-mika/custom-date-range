@@ -11,47 +11,64 @@ const useStyles = makeStyles({
   root: {
     padding: '8px 18px',
     cursor: 'pointer',
-    marginRight: 20,
-    width: 200,
-    borderBottom: '4px solid transparent'
+    width: 180,
+    border: '1px solid #DADCE0',
+    borderRadius: 4
+  },
+  first: {
+    marginRight: 8
   },
   icon: {
     fontSize: 18
   },
   text: {
     fontSize: 16,
-    marginLeft: 8
-  },
-  onDark: {
-    color: '#A7AEB7',
+    marginLeft: 8,
   },
   active: {
-    borderBottom: '4px solid #2592EA'
+    border: '2px solid #2592EA'
+  },
+  iconValue: {
+    color: '#2592EA'
+  },
+  value: {
+    color: '#182A3A'
+  },
+  noValue: {
+    color: '#B0B7C9'
   }
 })
 
-const DateInput = ({ onClick, value, formatDate, placeholder, active }) => {
+const DateInput = ({ value, formatDate, placeholder, active, first }) => {
   const classes = useStyles();
 
   return (
       <Box 
-        onClick={onClick} 
         display="flex" 
         alignItems="center" 
         justifyContent="space-between"
-        bgcolor="#07213A"
-        // borderRadius={15}
-        className={clsx(classes.root, active? classes.active: '')}>
+        className={clsx(
+          classes.root, 
+          active? classes.active: '',
+          first? classes.first: ''
+        )}
+      >
           <Box display="flex" alignItems="center">
-              <DateRangeIcon className={clsx(classes.icon, classes.onDark)} />
-              <Typography className={clsx(classes.text, classes.onDark)}>
+              <DateRangeIcon 
+                className={clsx(
+                  active? classes.iconValue: classes.noValue, 
+                  classes.icon
+                )} 
+              />
+              <Typography 
+                className={clsx(
+                  value ? classes.value: classes.noValue, 
+                  classes.text
+                )}
+              >
                   {value ? formatDate(value).toString(): placeholder}
               </Typography>
           </Box>
-          {/* <Box display="flex" flexDirection="column" justifyContent="center">
-            <ArrowDropUpIcon className={clsx(classes.icon, classes.onDark)} />
-            <ArrowDropDownIcon className={clsx(classes.icon, classes.onDark)} />
-          </Box> */}
       </Box>
   );
 }

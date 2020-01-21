@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, cloneElement } from "react";
 import clsx from 'clsx';
 import { DatePicker } from "@material-ui/pickers";
 import { useUtils } from "@material-ui/pickers";
-import { withStyles, fade, makeStyles } from "@material-ui/core/styles";
+import { fade, makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => {
-  const focusedRangeColor = fade(theme.palette.primary.main, 0.3);
+  const focusedRangeColor = fade('#2592EA', 0.3);
   const focusedRangeGradient = `linear-gradient(to right, ${focusedRangeColor}, ${focusedRangeColor})`;
   const transparentRangeGradient = `linear-gradient(to right, rgba(0,0,0,0.0), rgba(0,0,0,0.0))`;
   return {
@@ -15,6 +15,7 @@ const useStyles = makeStyles(theme => {
         marginTop: 10,
       }
     },
+    
     day: {
       width: 40,
       height: 36,
@@ -44,7 +45,7 @@ const useStyles = makeStyles(theme => {
         color: theme.palette.text.primary,
         "&::after": {
           backgroundColor: theme.palette.background.paper,
-          border: `2px solid ${theme.palette.primary.main}`,
+          border: `2px solid #2592EA`,
           bottom: -2,
           left: -2,
           height: 36,
@@ -64,7 +65,7 @@ const useStyles = makeStyles(theme => {
       pointerEvents: "none"
     },
     current: {
-      color: theme.palette.primary.main,
+      color: '#2592EA',
       fontWeight: 600
     },
     focusedRange: {
@@ -80,16 +81,23 @@ const useStyles = makeStyles(theme => {
       pointerEvents: "none",
       color: theme.palette.text.hint
     },
+    isDisabled: {
+      pointerEvents: "none",
+      color: theme.palette.text.hint,
+      '&:hover': {
+        backgroundColor: 'transparent',
+      }
+    },
     beginCap: {
       "&::after": {
         transform: "scale(1)",
-        backgroundColor: theme.palette.primary.main
+        backgroundColor: '#2592EA'
       }
     },
     endCap: {
       "&::after": {
         transform: "scale(1)",
-        backgroundColor: theme.palette.primary.main
+        backgroundColor: '#2592EA'
       }
     },
     focusedFirst: {
@@ -101,34 +109,25 @@ const useStyles = makeStyles(theme => {
   };
 })
 
-const StaticDatePicker = ({
-  date, onChange, value, format,
+const DateRangePicker = ({
+  date, onChange, value,
   ...props}) => {
   const utils = useUtils();
   const [begin, setBegin] = useState(value[0]);
   const [end, setEnd] = useState(value[1]);
-  const [prevBegin, setPrevBegin] = useState(undefined);
-  const [prevEnd, setPrevEnd] = useState(undefined);
-  const [hasClicked, setHasClicked] = useState(false);
   const [hover, setHover] = useState(undefined);
 
   const min = Math.min(begin, end || hover);
   const max = Math.max(begin, end || hover);
 
   const classes = useStyles();
-  
-  const formatDate = date => utils.format(date, format || utils.dateFormat);
 
-
-  useEffect(() => {
-    onChange({ begin, end });
-  }, [begin, end, prevBegin, prevEnd])
+  useEffect(() => onChange({ begin, end }), [begin, end])
 
   // prettier-ignore
-  function renderDay(day, selectedDate, dayInCurrentMonth, dayComponent) {
-    return React.cloneElement(dayComponent, {
+  const renderDay = (day, selectedDate, dayInCurrentMonth, dayComponent) => {
+    return cloneElement(dayComponent, {
       onClick: e => {
-        // setHasClicked(true);
         e.stopPropagation();
         if (!begin) setBegin(day);
         else if (!end) {
@@ -138,10 +137,6 @@ const StaticDatePicker = ({
           } else {
             setEnd(day);
           }
-          // if (autoOk) {
-          //   setPrevBegin(undefined);
-          //   setPrevEnd(undefined);
-          // }
         } else {
           setBegin(day);
           setEnd(undefined);
@@ -149,7 +144,7 @@ const StaticDatePicker = ({
       },
       onMouseEnter: () => requestAnimationFrame(() => setHover(day)),
       onFocus: () => requestAnimationFrame(() => setHover(day)),
-      className: clsx(classes.day, {
+      className: clsx(!utils.isAfterDay(day, new Date())? classes.day: '', {
         [classes.hidden]: dayComponent.props.hidden,
         [classes.current]: dayComponent.props.current,
         [classes.isDisabled]: dayComponent.props.disabled,
@@ -172,16 +167,10 @@ const StaticDatePicker = ({
         {...props}
         autoOk
         openTo="date"
-        // value={date}
-        // onChange={onChange}
         renderDay={renderDay}     
-        // DialogProps={{ className: classes.dateRangePickerDialog }}
       />
     </>
   );
 };
 
-
-
-// export default withStyles(styles, { name: "DateRangePicker" })(StaticDatePicker);
-export default StaticDatePicker;
+export default DateRangePicker;

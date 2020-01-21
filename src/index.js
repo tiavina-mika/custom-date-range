@@ -4,7 +4,7 @@ import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-import App from "./App2";
+import App from "./App";
 
 const rootElement = document.getElementById("root");
 ReactDOM.render(
