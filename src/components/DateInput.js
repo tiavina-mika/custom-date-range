@@ -10,7 +10,6 @@ import DateRangeIcon from '@material-ui/icons/DateRange';
 const useStyles = makeStyles({
   root: {
     padding: '8px 18px',
-    cursor: 'pointer',
     width: 180,
     border: '1px solid #DADCE0',
     borderRadius: 4
